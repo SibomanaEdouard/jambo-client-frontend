@@ -8,13 +8,30 @@ import { AuthProvider } from './context/authContext';
 import { useAuth } from './context/auth';
 import Header from './components/Layout/Header';
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+
+const DevicePendingRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, deviceVerified } = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
+  // If device is verified, redirect to dashboard
+  if (deviceVerified) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const DashboardRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, deviceVerified } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // If device is not verified, redirect to pending page
   if (!deviceVerified) {
     return <Navigate to="/device-pending" replace />;
   }
@@ -23,29 +40,30 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, deviceVerified } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {isAuthenticated && <Header />}
-      <main className={isAuthenticated ? '' : 'min-h-screen'}>
+      {/* Only show header if authenticated AND device is verified */}
+      {isAuthenticated && deviceVerified && <Header />}
+      <main className={isAuthenticated && deviceVerified ? '' : 'min-h-screen'}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route 
             path="/dashboard" 
             element={
-              <ProtectedRoute>
+              <DashboardRoute>
                 <Dashboard />
-              </ProtectedRoute>
+              </DashboardRoute>
             } 
           />
           <Route 
             path="/device-pending" 
             element={
-              <ProtectedRoute>
+              <DevicePendingRoute>
                 <DevicePending />
-              </ProtectedRoute>
+              </DevicePendingRoute>
             } 
           />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
