@@ -1,7 +1,6 @@
 import React from 'react';
 import { Shield, Clock } from 'lucide-react';
 import { useAuth } from '../context/auth';
-// import { useAuth } from '../context/authContext';
 
 const DevicePending: React.FC = () => {
   const { user, logout } = useAuth();
