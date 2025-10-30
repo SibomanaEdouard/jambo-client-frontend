@@ -5,7 +5,6 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 import Alert from '../components/UI/Alert';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import { useAuth } from '../context/auth';
-// import { useAuth } from '../context/authContext';
 
 const Dashboard: React.FC = () => {
   const { user, updateBalance } = useAuth();
